@@ -1,0 +1,5 @@
+create table thingTags(
+thingId BIGINT,
+tag VARCHAR(50)
+
+)

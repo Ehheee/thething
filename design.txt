@@ -1,0 +1,15 @@
+thething.ee/                            - Main page - can be configured to show a specific page. Otherwise shows default 'blog layout'
+¤thething.ee/{string}                    - Checks datatypes first and if doesn't exist checks tag also if user is allowed to see tag. 
+¤thething.ee/{string}/{integer}          - Same as above, but integer shows pagenumber
+¤thething.ee/{long}                      - Returns thing by id, if thing has only single tag and the tag has settings, then redirect is done to correct tag
+thething.ee/{string}/{string}           - First is datatype, second is tag. Shows a certain tag, but only one type of things.
+thething.ee/{string}/{long}/{string}    - Same as above, but string is title. This is the preffered pattern for most things.
+thething.ee/b/{integer}                 - 'Blog', integer shows page. 
+
+
+
+5 main startPages {blog, thing, url, tag, type}
+
+Existing logged in user logs in as externalUser. It is checked if externalUser exists(users.externalUserId). If not, it is initialized.
+User logs in through facebook. Token is asked and userId from facebook. Check from externalUsers if such user already exists by externalId. If not, creates externalUser and related user.
+Existing user logs in. It is checked if it already is an external user and if is, try to login using stored tokens.

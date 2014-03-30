@@ -1,0 +1,11 @@
+CREATE TABLE comments
+(
+
+id BIGINT NOT NULL AUTO_INCREMENT,
+thingId BIGINT NOT NULL,
+text LONGTEXT,
+date DATE,
+author INT,
+userId INT,
+PRIMARY KEY (ID)
+ );
