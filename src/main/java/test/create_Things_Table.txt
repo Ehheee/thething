@@ -3,7 +3,7 @@ CREATE TABLE things
 
 id SIGNED BIGINT NOT NULL AUTO_INCREMENT,
 title VARCHAR (100),
-type INT,
+type VARCHAR(2),
 text LONGTEXT,
 fileName VARCHAR(200),
 date DATE,

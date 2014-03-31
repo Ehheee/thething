@@ -1,16 +1,19 @@
 package thething.one.dbmapping;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
 import thething.one.dataobjects.Comment;
 
@@ -22,25 +25,34 @@ public class ThingFilter {
 		ARTICLE("a", "article"), PHOTO("p", "photo"), PHOTO_ARTICLE("pa", "photoArticle");
 		
 		
-		private String text;
+		private String identifier;
 		private String description;
+		private static List<ThingType> allValues = Arrays.asList(ThingType.values());
 		
-		ThingType(String text, String description) {
-			this.text = text;
+		ThingType(String identifier, String description) {
+			this.identifier = identifier;
 			this.description = description;
 		}
 
-		public String getText() {
-			return this.text;
+		public String getIdentifier() {
+			return this.identifier;
 		}
 		public String getDescription(){
 			return this.description;
 		}
+		
+		public String toString(){
+			return this.identifier;
+		}
+		
+		public static List<ThingType> getAllValues(){
+			return allValues;
+		}
 
 		public static ThingType fromString(String text) {
 			if (text != null) {
-				for (ThingType b : ThingType.values()) {
-					if (text.equalsIgnoreCase(b.text)) {
+				for (ThingType b : allValues) {
+					if (text.equalsIgnoreCase(b.identifier)) {
 						return b;
 					}else if(text.equalsIgnoreCase(b.description)){
 						return b;
@@ -51,7 +63,7 @@ public class ThingFilter {
 		}
 	}
 	
-	Map<String, Object> bindParams;
+	MapSqlParameterSource bindParams;
 	Date startDate;
 	Date endDate;
 	Integer authorId;
@@ -84,18 +96,16 @@ public class ThingFilter {
 	
 
 	
-	private String getTypeQuery(Map<String, Object> bindParams){
+	private String getTypeQuery(MapSqlParameterSource bindParams){
 		String q = selectThings;
 		q = q + a + byType;
 		if(types == null){
-			logger.warn("ThingFilter.types is null. Why?");
 			types = new HashSet<ThingType>();
+			types.addAll(ThingType.getAllValues());
+		}else if(types.isEmpty()){
 			types.addAll(Arrays.asList(ThingType.values()));
 		}
-		if(types.isEmpty()){
-			types.addAll(Arrays.asList(ThingType.values()));
-		}
-		bindParams.put("types", types);
+		bindParams.addValue("types", types);
 		logger.debug("getTypeQuery result: " + q);
 		return q;
 	}
@@ -105,50 +115,50 @@ public class ThingFilter {
 	@SuppressWarnings("unchecked")
 	public String createQuery(){
 		if(bindParams == null){
-			bindParams = new HashMap<String, Object>();
+			bindParams = new MapSqlParameterSource();
+			bindParams.registerSqlType("types", Types.VARCHAR);
 		}
 		String q = getTypeQuery(bindParams);
-		//logger.debug(((Set<ThingType>)bindParams.get("types")).toArray());
 
 		
 		if(userId != null){
-			bindParams.put("userId", userId);
+			bindParams.addValue("userId", userId);
 		}else{
-			bindParams.put("userId", null);
+			bindParams.addValue("userId", null);
 		}
 		
 		if(thingId != null){
 			q = q + a + byId + ";";
-			bindParams.put("id", thingId);
+			bindParams.addValue("id", thingId);
 			return q;
 		}
 		
 		if(startDate != null){
 			q = q + a + byStartDate;
-			bindParams.put("startDate", startDate);
+			bindParams.addValue("startDate", startDate);
 		}
 		if(endDate != null){
 			q = q + a + byEndDate;
-			bindParams.put("endDate", endDate);
+			bindParams.addValue("endDate", endDate);
 		}
 		if(authorId != null){
 			q = q + a + byAuthor;
-			bindParams.put("authorId", authorId);
+			bindParams.addValue("authorId", authorId);
 		}
 		if(published != null){
 			q = q + a + byPublished;
-			bindParams.put("published", published);
+			bindParams.addValue("published", published);
 		}
 		
 		if(inBlog != null){
 			q = q + a + byInBlog;
-			bindParams.put("inBlog", inBlog);
+			bindParams.addValue("inBlog", inBlog);
 		}
 		
 		
 		if(tags != null && !tags.isEmpty()){
 			q = q + a + byTags;
-			bindParams.put("tags", tags);
+			bindParams.addValue("tags", tags);
 		}
 		
 		
@@ -164,7 +174,7 @@ public class ThingFilter {
 		
 		if(orderBy != null){
 			q = q + " order by :orderBy " + orderHow + ", c.date";
-			bindParams.put("orderBy", orderBy);
+			bindParams.addValue("orderBy", orderBy);
 		}else{
 			q = q + " order by t.order " + orderHow + ", c.date";
 		}
@@ -350,23 +360,19 @@ public class ThingFilter {
 		this.types = types;
 	}
 
-
-
-	public Map<String, Object> getBindParams() {
+	public MapSqlParameterSource getBindParams() {
 		return bindParams;
 	}
-
-
-
-	public void setBindParams(Map<String, Object> bindParams) {
+	public void setBindParams(MapSqlParameterSource bindParams) {
 		this.bindParams = bindParams;
 	}
 
+
+
 	public String toString(){
-		Set<ThingType> thingTypes = (HashSet<ThingType>)bindParams.get("types");
-		Set<Entry<String, Object>> bp = bindParams.entrySet();
+		Map<String, Object> bp = bindParams.getValues();
 		String s = "bindParams{";
-		for(Entry<String, Object> e: bp){
+		for(Entry<String, Object> e: bp.entrySet()){
 			s = s + "KV" + "(" + e.getKey() + ", " + e.getValue() + ")";
 			
 		}

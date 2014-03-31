@@ -40,9 +40,7 @@ public class ThingDao extends BaseDao{
 	
 	public List<AbstractThing> getThings(ThingFilter filter){
 		List<AbstractThing> things = null;
-		String query = filter.createQuery();
-		Map<String, Object> bindParams = filter.getBindParams();
-		Object o = this.namedParameterJdbcTemplate.query(query, bindParams, extractor);
+		Object o = this.namedParameterJdbcTemplate.query(filter.createQuery(), filter.getBindParams(), extractor);
 		things = this.checkObject(o);
 		if(things == null){
 		

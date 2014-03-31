@@ -8,6 +8,7 @@ public class Settings {
 	String mainCSS;
 	Boolean standAlone;
 	String startPage;
+	Integer tagOrder;
 	
 	public Integer getId() {
 		return id;
@@ -45,6 +46,13 @@ public class Settings {
 	public void setStartPage(String startPage) {
 		this.startPage = startPage;
 	}
+	public Integer getTagOrder() {
+		return tagOrder;
+	}
+	public void setTagOrder(Integer tagOrder) {
+		this.tagOrder = tagOrder;
+	}
+	
 	
 	
 	
