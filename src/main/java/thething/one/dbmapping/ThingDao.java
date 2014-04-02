@@ -1,6 +1,7 @@
 package thething.one.dbmapping;
 
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,11 +52,11 @@ public class ThingDao extends BaseDao{
 	public AbstractThing getThingForUser(Long id, Long userId){
 		AbstractThing thing = null;
 	
-			ThingFilter tf = new ThingFilter();
-			tf.setThingId(id);
-			tf.setUserId(userId);
+			ThingFilter filter = new ThingFilter();
+			filter.setThingId(id);
+			filter.setUserId(userId);
 			
-			Object o = this.namedParameterJdbcTemplate.query(tf.createQuery(), tf.getBindParams(), extractor);
+			Object o = this.namedParameterJdbcTemplate.query(filter.createQuery(), filter.getBindParams(), extractor);
 			List<AbstractThing>things = this.checkObject(o);
 			thing = things.get(0);
 			if(things.get(1) != null){
@@ -68,7 +69,7 @@ public class ThingDao extends BaseDao{
 	
 	public Long insertThing(AbstractThing thing){
 		KeyHolder keyHolder = new GeneratedKeyHolder();
-		SqlParameterSource pm = new BeanPropertySqlParameterSource(thing);
+		BeanPropertySqlParameterSource pm = new BeanPropertySqlParameterSource(thing);
 		this.namedParameterJdbcTemplate.update(Statements.Insert_thing, pm, keyHolder);
 		Long newId = (Long)keyHolder.getKey();
 		tagDao.performAction(thing.getTags(), newId, ActionType.INSERT, ObjectType.THING);

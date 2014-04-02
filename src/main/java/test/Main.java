@@ -44,6 +44,7 @@ import thething.one.dataobjects.LegacyGoogleProfile;
 import thething.one.dataobjects.Photo;
 import thething.one.dbmapping.BaseDao.ActionType;
 import thething.one.dbmapping.TagDao;
+import thething.one.dbmapping.ThingDao;
 import thething.one.dbmapping.ThingFilter;
 import thething.one.dbmapping.BaseDao.ObjectType;
 import thething.one.dbmapping.ThingFilter.ThingType;
@@ -69,6 +70,8 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
+		
+		/*
 		ObjectType t = ObjectType.valueOf("user".toUpperCase());
 		print(t);
 		OAuthClientRequest request = null;
@@ -86,6 +89,9 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
+		
+		
 		/*
 		Long a = System.currentTimeMillis();
 		
@@ -123,26 +129,19 @@ public class Main {
 		ds.setValidationQuery("SELECT 1");
 		NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(ds);
 		
-		TagDao tagDao = new TagDao();
-		tagDao.setDataSource(ds);
-		tagDao.updateTagReferences(null, 2L,  ObjectType.THING);
-		ThingFilter tf = new ThingFilter();
-		tf.setUserId(2L);
-		tf.setOrderHow("ASC");
-		tf.setOrderBy("t.date");
-		Object o = template.query(tf.createQuery(), tf.getBindParams(), new AbstractThingExtractor());
-		if(o != null && o instanceof List){
-			print("partsuccess");
-			List<AbstractThing> things = (List<AbstractThing>)o;
-			for(AbstractThing thing:things){
-				print(thing);
-				print(thing.getComments().get(0).getText());
-			}
-		}
+		ThingDao thingDao = new ThingDao();
+		Photo p = new Photo();
+		p.setAuthorId(2L)
+		.setCommentCount(3)
+		.setDate(new Date())
+		.setDescription("insertTest")
+		.setInBlog(true)
+		.setPriv(false)
+		.setPublished(true)
+		.setTitle("Esimene foto");
+		thingDao.insertThing(p);
 		
 		
-		
-		System.out.println(tf.createQuery());
 		
 		
 		/*
