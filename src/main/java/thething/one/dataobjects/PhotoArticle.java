@@ -21,6 +21,10 @@ public class PhotoArticle extends Photo {
 		super(photo.id, photo.title, photo.date, photo.description, photo.authorId, photo.tags, photo.comments, photo.priv, photo.published, photo.inBlog,  photo.commentCount, photo.fileName, photo.order);
 		this.text = text;
 	}
+	
+	public PhotoArticle(){
+		
+	}
 
 	public String getText() {
 		return text;

@@ -40,12 +40,9 @@ public class ThingDao extends BaseDao{
 	
 	
 	public List<AbstractThing> getThings(ThingFilter filter){
-		List<AbstractThing> things = null;
-		Object o = this.namedParameterJdbcTemplate.query(filter.createQuery(), filter.getBindParams(), extractor);
-		things = this.checkObject(o);
-		if(things == null){
+	
+		List<AbstractThing> things = this.namedParameterJdbcTemplate.query(filter.createQuery(), filter.getBindParams(), extractor);
 		
-		}
 		return things;
 	}
 	
@@ -56,20 +53,23 @@ public class ThingDao extends BaseDao{
 			filter.setThingId(id);
 			filter.setUserId(userId);
 			
-			Object o = this.namedParameterJdbcTemplate.query(filter.createQuery(), filter.getBindParams(), extractor);
-			List<AbstractThing>things = this.checkObject(o);
+			List<AbstractThing> things = this.namedParameterJdbcTemplate.query(filter.createQuery(), filter.getBindParams(), extractor);
 			thing = things.get(0);
-			if(things.get(1) != null){
-				logger.error("Single thing id returns 2 rows");
+			if(things.size()> 1){
+				logger.error("Single thing id returns more rows");
 			}
 
 		
 		return thing;
 	}
 	
+	
+	
 	public Long insertThing(AbstractThing thing){
+		//TODO got to extend BeanPropertySqlParameter for not existing fields to work
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		BeanPropertySqlParameterSource pm = new BeanPropertySqlParameterSource(thing);
+		pm.registerSqlType("type", Types.VARCHAR);
 		this.namedParameterJdbcTemplate.update(Statements.Insert_thing, pm, keyHolder);
 		Long newId = (Long)keyHolder.getKey();
 		tagDao.performAction(thing.getTags(), newId, ActionType.INSERT, ObjectType.THING);
@@ -89,7 +89,8 @@ public class ThingDao extends BaseDao{
 	}
 	
 	public void updateThing(AbstractThing thing){
-		SqlParameterSource pm = new BeanPropertySqlParameterSource(thing);
+		BeanPropertySqlParameterSource pm = new BeanPropertySqlParameterSource(thing);
+		pm.registerSqlType("type", Types.VARCHAR);
 		this.jdbcTemplate.queryForRowSet(Statements.Select_things_For_Update, thing.getId());
 		this.namedParameterJdbcTemplate.update(Statements.Update_things_By_id, pm);
 		tagDao.updateTagReferences(thing.getTags(), thing.getId(), ObjectType.THING);

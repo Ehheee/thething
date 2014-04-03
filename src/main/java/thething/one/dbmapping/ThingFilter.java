@@ -15,23 +15,30 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
+import thething.one.dataobjects.Article;
 import thething.one.dataobjects.Comment;
+import thething.one.dataobjects.Photo;
+import thething.one.dataobjects.PhotoArticle;
 
 public class ThingFilter {
 	
 	protected Log logger = LogFactory.getLog(getClass());
 
 	public enum ThingType{
-		ARTICLE("a", "article"), PHOTO("p", "photo"), PHOTO_ARTICLE("pa", "photoArticle");
+		ARTICLE("a", "article", Article.class), 
+		PHOTO("p", "photo", Photo.class), 
+		PHOTO_ARTICLE("pa", "photoArticle", PhotoArticle.class);
 		
 		
 		private String identifier;
 		private String description;
+		private Class<?> clazz;
 		private static List<ThingType> allValues = Arrays.asList(ThingType.values());
 		
-		ThingType(String identifier, String description) {
+		ThingType(String identifier, String description, Class<?> clazz) {
 			this.identifier = identifier;
 			this.description = description;
+			this.clazz = clazz;
 		}
 
 		public String getIdentifier() {
@@ -39,6 +46,9 @@ public class ThingFilter {
 		}
 		public String getDescription(){
 			return this.description;
+		}
+		public Class<?> getThingClass(){
+			return this.clazz;
 		}
 		
 		public String toString(){
