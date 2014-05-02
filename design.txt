@@ -7,6 +7,21 @@ thething.ee/{string}/{long}/{string}    - Same as above, but string is title. Th
 thething.ee/b/{integer}                 - 'Blog', integer shows page. 
 
 
+/t/{tag}
+/t/{type}
+/t/{tag}/{type}
+/t/{tag}/{type}/{pagenumber}
+/t/{tag}/{pagenumber}
+/t/{type}/{pagenumber}
+
+/b/
+/b/{integer}
+
+/{long}
+/{long}/{string}
+
+
+
 
 5 main startPages {blog, thing, url, tag, type}
 

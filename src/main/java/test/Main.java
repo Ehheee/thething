@@ -1,5 +1,6 @@
 package test;
 
+import java.lang.reflect.Field;
 import java.sql.Array;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -42,6 +43,7 @@ import thething.one.dataobjects.Article;
 import thething.one.dataobjects.Comment;
 import thething.one.dataobjects.LegacyGoogleProfile;
 import thething.one.dataobjects.Photo;
+import thething.one.dataobjects.PhotoArticle;
 import thething.one.dbmapping.BaseDao.ActionType;
 import thething.one.dbmapping.TagDao;
 import thething.one.dbmapping.ThingDao;
@@ -118,6 +120,10 @@ public class Main {
 		
 		*/
 		
+		
+		
+		
+		/*
 		BasicDataSource ds = new BasicDataSource();
 		ds.setDriverClassName("com.mysql.jdbc.Driver");
 		ds.setUsername("thething01");
@@ -130,8 +136,13 @@ public class Main {
 		NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(ds);
 		
 		ThingDao thingDao = new ThingDao();
-		Photo p = new Photo();
-		p.setAuthorId(2L)
+		thingDao.setDataSource(ds);
+		PhotoArticle p = new PhotoArticle();
+		p
+		.setText("randomtext")
+		.setFileName("randomFileName")
+		.setAuthorId(2L)
+		.setType(ThingType.PHOTO_ARTICLE)
 		.setCommentCount(3)
 		.setDate(new Date())
 		.setDescription("insertTest")
@@ -139,8 +150,10 @@ public class Main {
 		.setPriv(false)
 		.setPublished(true)
 		.setTitle("Esimene foto");
-		thingDao.insertThing(p);
 		
+		print(p);
+		thingDao.insertThing(p);
+		*/
 		
 		
 		

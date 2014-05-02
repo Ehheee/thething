@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import thething.one.dbmapping.ThingFilter.ThingType;
+
 public abstract class AbstractThing {
 
 	
@@ -20,6 +22,7 @@ public abstract class AbstractThing {
 	Boolean inBlog;
 	Integer commentCount;
 	Integer order;
+	ThingType type;
 	
 	
 	
@@ -145,15 +148,46 @@ public abstract class AbstractThing {
 		this.order = order;
 		return this;
 	}
+	
+	
+	
+	
+	public ThingType getType() {
+		return type;
+	}
+	public AbstractThing setType(ThingType type) {
+		this.type = type;
+		return this;
+	}
+
+
 	public String toString(){
-		String result = this.getClass().getSimpleName() + "{";
-		result += "id=" + this.id + ", ";
-		result += "authorId=" + this.authorId + ", ";
-		result += "commentCount=" + this.commentCount + ", ";
-		result += "date=" + this.date + ", ";
-		result += "title=" + this.title + ", ";
-		return result;
+		StringBuilder result = new StringBuilder();
+		result.append(getType().getDescription() + "{")
+		.append("id= " + getId() + ", ")
+		.append("authorId=" + this.authorId + ", ")
+		.append("commentCount=" + this.commentCount + ", ")
+		.append("date=" + this.date + ", ")
+		.append("title=" + this.title + ", ");
 		
+		switch(getType()){
+		case ARTICLE:
+			Article a = (Article)this;
+			result.append("text=" + a.getText() + "}");
+			break;
+		case PHOTO:
+			Photo p = (Photo)this;
+			result.append("fileName=" + p.getFileName() + "}");
+			break;
+			
+		case PHOTO_ARTICLE:
+			PhotoArticle pa = (PhotoArticle)this;
+			result.append("text=" + pa.getText() + "}");
+			result.append("fileName=" + pa.getFileName() + "}");
+			break;
+		}
+		
+		return result.toString();
 	}
 	
 }

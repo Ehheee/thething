@@ -32,12 +32,12 @@ public class Photo extends AbstractThing {
 		this.fileName = fileName;
 		return this;
 	}
-	
+	/*
 	public String toString(){
 	
 		String result = super.toString();
 		result += "fileName=" + fileName + "}";
 		return result;
 	}
-	
+	*/
 }
