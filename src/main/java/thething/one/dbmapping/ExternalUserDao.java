@@ -15,7 +15,7 @@ import thething.one.dataobjects.User;
 import thething.one.dataobjects.ExternalUser.ExternalLoginType;
 import thething.one.dbmapping.mappers.ExternalUserMapper;
 
-public class ExternalUserDao extends BaseDao {
+public class ExternalUserDao extends ExtendedBaseDao {
 
 	
 	public ExternalUser getUser(String externalId, ExternalLoginType loginType){

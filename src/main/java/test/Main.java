@@ -123,7 +123,7 @@ public class Main {
 		
 		
 		
-		/*
+		
 		BasicDataSource ds = new BasicDataSource();
 		ds.setDriverClassName("com.mysql.jdbc.Driver");
 		ds.setUsername("thething01");
@@ -135,14 +135,17 @@ public class Main {
 		ds.setValidationQuery("SELECT 1");
 		NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(ds);
 		
+		TagDao tagDao = new TagDao();
+		tagDao.setDataSource(ds);
+		
 		ThingDao thingDao = new ThingDao();
 		thingDao.setDataSource(ds);
-		PhotoArticle p = new PhotoArticle();
+		thingDao.setTagDao(tagDao);
+		Photo p = new Photo();
 		p
-		.setText("randomtext")
 		.setFileName("randomFileName")
 		.setAuthorId(2L)
-		.setType(ThingType.PHOTO_ARTICLE)
+		.setType(ThingType.PHOTO)
 		.setCommentCount(3)
 		.setDate(new Date())
 		.setDescription("insertTest")
@@ -153,7 +156,7 @@ public class Main {
 		
 		print(p);
 		thingDao.insertThing(p);
-		*/
+		
 		
 		
 		

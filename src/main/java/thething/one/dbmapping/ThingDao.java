@@ -32,7 +32,7 @@ import thething.one.dbmapping.BaseDao.ObjectType;
 import thething.one.dbmapping.mappers.AbstractThingExtractor;
 import thething.one.dbmapping.mappers.AbstractThingMapper;
 
-public class ThingDao extends BaseDao{
+public class ThingDao extends ExtendedBaseDao{
 
 	
 	
@@ -40,10 +40,7 @@ public class ThingDao extends BaseDao{
 	
 	
 	public List<AbstractThing> getThings(ThingFilter filter){
-<<<<<<< HEAD
-=======
-	
->>>>>>> eb4940f85645a9a9447398b9786c04c464ae3058
+
 		List<AbstractThing> things = this.namedParameterJdbcTemplate.query(filter.createQuery(), filter.getBindParams(), extractor);
 		
 		return things;
@@ -69,9 +66,8 @@ public class ThingDao extends BaseDao{
 	
 	
 	public Long insertThing(AbstractThing thing){
-		//TODO got to extend BeanPropertySqlParameter for not existing fields to work
 		KeyHolder keyHolder = new GeneratedKeyHolder();
-		BeanPropertySqlParameterSource pm = new BeanPropertySqlParameterSource(thing);
+		CombinedSqlParameterSource pm = new CombinedSqlParameterSource(thing);
 		pm.registerSqlType("type", Types.VARCHAR);
 		this.namedParameterJdbcTemplate.update(Statements.Insert_thing, pm, keyHolder);
 		Long newId = (Long)keyHolder.getKey();
@@ -92,7 +88,7 @@ public class ThingDao extends BaseDao{
 	}
 	
 	public void updateThing(AbstractThing thing){
-		BeanPropertySqlParameterSource pm = new BeanPropertySqlParameterSource(thing);
+		CombinedSqlParameterSource pm = new CombinedSqlParameterSource(thing);
 		pm.registerSqlType("type", Types.VARCHAR);
 		this.jdbcTemplate.queryForRowSet(Statements.Select_things_For_Update, thing.getId());
 		this.namedParameterJdbcTemplate.update(Statements.Update_things_By_id, pm);

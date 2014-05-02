@@ -29,7 +29,7 @@ public class AdminBaseController extends BaseController{
 			date  = dateFormat.parse(request.getParameter("date"));
 		} catch (ParseException e) {
 			logger.error(e.getStackTrace());
-			date = null;
+			date = new Date();
 		}
 		
 		String description = request.getParameter("description");
@@ -43,54 +43,23 @@ public class AdminBaseController extends BaseController{
 		String fileName = request.getParameter("fileName");
 		Boolean inBlog = Boolean.valueOf(request.getParameter("inBlog"));
 		AbstractThing thing = null;
-		if(id != null){
-			thing = thingDao.getThingForUpdate(id);
-			thing
-			.setAuthorId(authorId)
-			.setDate(date)
-			.setDescription(description)
-			.setOrder(order)
-			.setPriv(priv)
-			.setPublished(published)
-			.setInBlog(inBlog)
-			.setTags(tags)
-			.setTitle(title);
+		
+		switch(type){
+		case ARTICLE:
+			thing = new Article(id, title, date, description, authorId, tags, null, priv, published, inBlog, null, text, order);
+			break;
 			
-			switch(type){
-			case ARTICLE:
-				if(!(thing instanceof Article)){
-					thing = new Article(id, title, date, description, authorId, tags, null, priv, published, inBlog, null, text, order);
-				}else{
-					((Article)thing).setText(text);
-				}
-				break;
-			case PHOTO:
-			case PHOTO_ARTICLE:
-				if(thing instanceof Photo && type.equals(ThingType.PHOTO)){
-					((Photo)thing).setFileName(fileName);
-				}else if(thing instanceof PhotoArticle && type.equals(ThingType.PHOTO_ARTICLE)){
-					((PhotoArticle)thing).setText(text).setFileName(fileName);
-				}else if(type.equals(ThingType.PHOTO)){
-					thing = new Photo(id, title, date, description, authorId, tags, null, priv, published, inBlog, null, fileName, order);
-				}else if(type.equals(ThingType.PHOTO_ARTICLE)){
-					thing = new PhotoArticle(id, title, date, description, authorId, tags, null, priv, published, inBlog, null, fileName, text, order);
-				}
-			}
+		case PHOTO:
+			thing = new Photo(id, title, date, description, authorId, tags, null, priv, published, inBlog, null, fileName, order);
+			break;
+		case PHOTO_ARTICLE:
+			thing = new PhotoArticle(id, title, date, description, authorId, tags, null, priv, published, inBlog, null, fileName, text, order);
+			break;
+		}
+		if(id != null){
 			thingDao.updateThing(thing);
 		}else{
-			switch(type){
-			case ARTICLE:
-				thing = new Article(id, title, date, description, authorId, tags, null, priv, published, inBlog, null, text, order);
-				break;
-			
-			case PHOTO:
-				thing = new Photo(id, title, date, description, authorId, tags, null, priv, published, inBlog, null, fileName, order);
-				break;
-			case PHOTO_ARTICLE:
-				thing = new PhotoArticle(id, title, date, description, authorId, tags, null, priv, published, inBlog, null, fileName, text, order);
-				break;
-			}
-		id = thingDao.insertThing(thing);
+			id = thingDao.insertThing(thing);
 		}
 		
 		

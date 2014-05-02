@@ -13,7 +13,7 @@ import thething.one.dataobjects.User;
 import thething.one.dbmapping.BaseDao.ActionType;
 import thething.one.dbmapping.BaseDao.ObjectType;
 
-public class UserDao extends BaseDao{
+public class UserDao extends ExtendedBaseDao{
 
 	
 	
