@@ -40,12 +40,8 @@ public class ThingDao extends BaseDao{
 	
 	
 	public List<AbstractThing> getThings(ThingFilter filter){
-		List<AbstractThing> things = null;
-		Object o = this.namedParameterJdbcTemplate.query(filter.createQuery(), filter.getBindParams(), extractor);
-		things = this.checkObject(o);
-		if(things == null){
+		List<AbstractThing> things = this.namedParameterJdbcTemplate.query(filter.createQuery(), filter.getBindParams(), extractor);
 		
-		}
 		return things;
 	}
 	
@@ -56,8 +52,7 @@ public class ThingDao extends BaseDao{
 			filter.setThingId(id);
 			filter.setUserId(userId);
 			
-			Object o = this.namedParameterJdbcTemplate.query(filter.createQuery(), filter.getBindParams(), extractor);
-			List<AbstractThing>things = this.checkObject(o);
+			List<AbstractThing> things = this.namedParameterJdbcTemplate.query(filter.createQuery(), filter.getBindParams(), extractor);
 			thing = things.get(0);
 			if(things.get(1) != null){
 				logger.error("Single thing id returns 2 rows");

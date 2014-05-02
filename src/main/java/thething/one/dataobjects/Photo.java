@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import thething.one.dbmapping.ThingFilter.ThingType;
+
 public class Photo extends AbstractThing {
 
 	
@@ -32,6 +34,7 @@ public class Photo extends AbstractThing {
 	}
 	
 	public String toString(){
+	
 		String result = super.toString();
 		result += "fileName=" + fileName + "}";
 		return result;
