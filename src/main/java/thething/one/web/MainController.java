@@ -84,7 +84,7 @@ public class MainController extends BaseController{
 	
 	
 	
-	private void checkTypeOrTag(String identifier, HttpSession session){
+	private ThingFilter checkTypeOrTag(String identifier, HttpSession session){
 		ThingType type = ThingType.fromString(identifier);
 		ThingFilter filter = null;
 		if(type != null){
@@ -98,18 +98,14 @@ public class MainController extends BaseController{
 				filter.setTags(tags);
 			}
 		}
-		session.setAttribute("thingFilter", filter);
+		return filter;
 		
 	}
 	
 	
 	private void processBlog(HttpServletRequest request, HttpSession session, Model model){
 		ThingFilter filter = this.processRequest(request, session,  null);
-		Object o = session.getAttribute("thingFilter");
-		if(o != null && o instanceof ThingFilter){
-			ThingFilter tf = (ThingFilter)o;
-			this.thingsToModel(tf, model);
-		}
+		this.thingsToModel(filter, model);
 	}
 	
 	

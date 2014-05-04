@@ -1,24 +1,30 @@
-thething.ee/                            - Main page - can be configured to show a specific page. Otherwise shows default 'blog layout'
-¤thething.ee/{string}                    - Checks datatypes first and if doesn't exist checks tag also if user is allowed to see tag. 
-¤thething.ee/{string}/{integer}          - Same as above, but integer shows pagenumber
-¤thething.ee/{long}                      - Returns thing by id, if thing has only single tag and the tag has settings, then redirect is done to correct tag
-thething.ee/{string}/{string}           - First is datatype, second is tag. Shows a certain tag, but only one type of things.
-thething.ee/{string}/{long}/{string}    - Same as above, but string is title. This is the preffered pattern for most things.
-thething.ee/b/{integer}                 - 'Blog', integer shows page. 
+/t/{tag}								- shows single tag
+/t/{type}								- shows single type
+/t/{tag}/{type}							- shows single type of a tag
+/t/{tag}/{type}/{pagenumber}			- same as above by page
+/t/{tag}/{pagenumber}					- same as above by page
+/t/{type}/{pagenumber}					- same as above by page
+
+/b/										- shows blog
+/b/{integer}							- same as above by page
+
+/t/{tag}/b								- shows blog by tag
+/t/{tag}/b/{pagenumber}					- same as above by page
+
+/{long}									- shows thing by id
+/{long}/{string}						- same as above with title
+
+/{string}								- configurable special(single) pages
 
 
-/t/{tag}
-/t/{type}
-/t/{tag}/{type}
-/t/{tag}/{type}/{pagenumber}
-/t/{tag}/{pagenumber}
-/t/{type}/{pagenumber}
+blog layout
+photos layout - galleries by tag
+photoarticle blog layout
+special page layout
 
-/b/
-/b/{integer}
-
-/{long}
-/{long}/{string}
+photo view
+photoarticle view
+article view
 
 
 
