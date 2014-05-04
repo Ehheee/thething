@@ -172,16 +172,7 @@ public class ThingFilter {
 		}
 		
 		
-		/*
-		if(userId != null){
-			q = q.replace("select_userTags", " left join userTags ut on ut.tag = tags.tag ");
-			q = q + a + byUserTags;
-			bindParams.put("userId", userId);
-		}		else{
-			q = q.replace("select_userTags", " ");
-		}
-		*/
-		
+		q = this.orderQuery(q);
 		if(orderBy != null){
 			q = q + " order by :orderBy " + orderHow + ", c.date";
 			bindParams.addValue("orderBy", orderBy);
@@ -190,17 +181,39 @@ public class ThingFilter {
 		}
 		
 		if(page != null && pageSize != null){
-			q = q + " limit " + (page*pageSize) + "," + (page*pageSize+pageSize) ;
+			q = q + " limit " + (page*pageSize) + "," + (pageSize+1) ;
 		}
 		if(page == null && pageSize != null){
-			q = q + " limit 0," + pageSize;
+			q = q + " limit 0," + (pageSize +1);
 		}
-		
-		
 		q = q + ";";
 		return q;
 		
 	}
+	
+	protected String orderQuery(String query){
+		if(orderBy != null){
+			query += " order by " + orderBy;
+			if(orderHow != null && ("asc".equalsIgnoreCase(orderHow) || "desc".equalsIgnoreCase(orderHow))){
+				query += " " + orderHow;
+			}
+		}
+		return query;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	public Long getThingId() {

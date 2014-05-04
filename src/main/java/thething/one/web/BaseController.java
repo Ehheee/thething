@@ -1,5 +1,6 @@
 package thething.one.web;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -9,13 +10,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+
+
 
 
 import thething.one.dataobjects.AbstractThing;
@@ -35,6 +42,7 @@ public class BaseController {
 	public ThingFilter processRequest(HttpServletRequest request, HttpSession session,  List<ThingType> types){
 		Map<String, String[]> params = request.getParameterMap();
 		printRequestParams(params);
+		
 		ThingFilter tf = checkFilter(params, session);
 		
 		if(types != null){
@@ -77,13 +85,7 @@ public class BaseController {
 				thingFilter.setAuthorId(null);
 			}
 			
-			if(params.get("published") != null){
-				Boolean published = Boolean.parseBoolean(params.get("published")[0]);
-				thingFilter.setPublished(published);
-			}else{
-				thingFilter.setPublished(null);
-			}
-			
+						
 			if(params.get("tags") != null){
 				Set<String> tags = new HashSet<String>(Arrays.asList(params.get("tags")));
 				thingFilter.setTags(tags);
@@ -97,20 +99,10 @@ public class BaseController {
 			}else{
 				thingFilter.setUserId(null);
 			}
-			
-			if(params.get("orderBy") != null){
-				//TODO validate here?
-				thingFilter.setOrderBy(params.get("orderBy")[0]);
-				
-			}else{
-				thingFilter.setOrderBy(null);
-			}
-			
-			if(params.get("orderHow") != null){
-				thingFilter.setOrderHow(params.get("orderHow")[0]);
-			}else{
-				thingFilter.setOrderHow(null);
-			}
+			thingFilter.setPublished(this.checkBoxToBoolean(params.get("published")[0]));
+			thingFilter.setOrderBy(params.get("orderBy")[0]);
+			thingFilter.setOrderHow(params.get("orderHow")[0]);
+	
 			
 			
 			logger.info("thingFilter processed from request :" + thingFilter);
@@ -128,6 +120,51 @@ public class BaseController {
 	}
 	
 	
+	protected String saveFile(MultipartHttpServletRequest request, ThingType thingType, String optionalPath) {
+		StringBuilder fileUrl = null;
+		try{
+			MultipartFile uploadFile = request.getFile("pdf");
+			if(uploadFile == null){
+				return null;
+			}
+			String sep = File.separator;
+			String fileName = uploadFile.getOriginalFilename();
+			if(fileName == null || "".equals(fileName)){
+				return null;
+			}
+			String contextPath = servletContext.getRealPath("");
+			StringBuilder filePath = new StringBuilder(contextPath);
+			filePath.append(sep).append("resources").append(sep).append("thingdata").append(sep).append(thingType.getIdentifier());
+			fileUrl = new StringBuilder ("/resources/thingdata/");
+			fileUrl.append(thingType.getIdentifier());
+			if(optionalPath != null){
+				filePath.append(sep).append(optionalPath);
+				fileUrl.append("/").append(optionalPath);
+			}
+			filePath.append(sep).append(fileName);
+			fileUrl.append("/").append(fileName);
+			File file = new File(filePath.toString());
+			if(!file.exists()){
+				file.mkdirs();
+				uploadFile.transferTo(file);
+				
+			}
+			
+		}catch(Exception e){
+			logger.error("saving file filed: ",  e);
+			return null;
+		}
+		return fileUrl.toString();
+	}
+	
+	private Boolean checkBoxToBoolean(String text){
+		if("on".equals(text)){
+			return true;
+		}else{
+			return Boolean.valueOf(text);
+		}
+	}
+	
 	private void printRequestParams(Map<String, String[]> params){
 		StringBuilder sb =  new StringBuilder("Received requestParams: {");
 		for(Entry<String, String[]> e: params.entrySet()){
@@ -139,6 +176,9 @@ public class BaseController {
 		logger.info(sb.toString());
 	}
 	
+	@Autowired
+	protected ServletContext servletContext;
+
 	
 	@Autowired 
 	protected CommentDao commentDao;
